@@ -1,7 +1,8 @@
 {
   "name": "willowisp",
-  "version": "0.0.1",
-  "main": "index.js",
+  "version": "0.0.3",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "compile": "npx tsc",
     "test": "node ./dist/test/test.js"
@@ -27,5 +28,13 @@
     "typescript",
     "json",
     "type checking"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pod042-A/willowisp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Pod042-A/willowisp/issues"
+  },
+  "homepage": "https://github.com/Pod042-A/willowisp#readme"
 }
