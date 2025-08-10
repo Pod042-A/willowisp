@@ -1,8 +1,8 @@
 {
   "name": "willowisp",
   "version": "0.0.4",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "compile": "npx tsc",
     "test": "node ./dist/test/test.js"
