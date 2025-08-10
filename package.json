@@ -1,0 +1,31 @@
+{
+  "name": "willowisp",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "compile": "npx tsc",
+    "test": "node ./dist/test/test.js"
+  },
+  "author": "Pod042-A",
+  "license": "Apache-2.0",
+  "description": "Runtime type validation and structure guard for JSON-compatible objects in TypeScript.",
+  "devDependencies": {
+    "@biomejs/biome": "^2.1.2",
+    "@types/node": "^24.2.1",
+    "biome": "^0.3.3",
+    "typescript": "^5.9.2"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "types",
+    "guard",
+    "validation",
+    "typescript",
+    "json",
+    "type checking"
+  ]
+}

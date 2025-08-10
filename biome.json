@@ -1,0 +1,401 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
+    "linter": {
+        "enabled": true,
+        "includes": [
+            "./src/**"
+        ],
+        "rules": {
+            "recommended": true,
+            "complexity": {
+                "noExcessiveCognitiveComplexity": {
+                    "level": "warn",
+                    "options": {
+                        "maxAllowedComplexity": 24
+                    }
+                },
+                "noExcessiveNestedTestSuites": "on",
+                "noForEach": "on",
+                "noUselessStringConcat": "on",
+                "noVoid": "on",
+                "useSimplifiedLogicExpression": "on",
+                "useWhile": "on",
+                "noStaticOnlyClass": "off"
+            },
+            "correctness": {
+                "noNodejsModules": "off",
+                "noPrivateImports": "on",
+                "noUndeclaredDependencies": "off",
+                "noUndeclaredVariables": "on",
+                "useImportExtensions": "on"
+            },
+            "nursery": {
+                "noAwaitInLoop": "on",
+                "noBitwiseOperators": "off",
+                "noConstantBinaryExpression": "on",
+                "noExcessiveLinesPerFunction": "off",
+                "noFloatingPromises": "on",
+                "noGlobalDirnameFilename": "on",
+                "noImplicitCoercion": "on",
+                "noImportCycles": "on",
+                "noMagicNumbers": "warn",
+                "noMisusedPromises": "on",
+                "noProcessGlobal": "on",
+                "noSecrets": {
+                    "level": "error",
+                    "options": {
+                        "entropyThreshold": 50
+                    }
+                },
+                "noShadow": "on",
+                "noTsIgnore": "on",
+                "noUnassignedVariables": "on",
+                "noUnresolvedImports": "off",
+                "noUselessBackrefInRegex": "on",
+                "noUselessEscapeInString": "on",
+                "noUselessUndefined": "on",
+                "useAdjacentGetterSetter": "on",
+                "useConsistentObjectDefinition": "on",
+                "useConsistentResponse": "on",
+                "useExhaustiveSwitchCases": "on",
+                "useExplicitType": "on",
+                "useExportsLast": "on",
+                "useIndexOf": "on",
+                "useIterableCallbackReturn": "on",
+                "useJsonImportAttribute": "off",
+                "useNumericSeparators": "info",
+                "useObjectSpread": "on",
+                "useParseIntRadix": "on",
+                "useReadonlyClassProperties": "on",
+                "useSingleJsDocAsterisk": "on",
+                "useSymbolDescription": "on",
+                "useUnifiedTypeSignature": "on"
+            },
+            "performance": {
+                "noBarrelFile": "on",
+                "noDelete": "on",
+                "noNamespaceImport": "on",
+                "noReExportAll": "on",
+                "useTopLevelRegex": "on"
+            },
+            "style": {
+                "noCommonJs": "on",
+                "noDefaultExport": "on",
+                "noDoneCallback": "on",
+                "noEnum": "on",
+                "noExportedImports": "on",
+                "noInferrableTypes": "on",
+                "noNamespace": "on",
+                "noNegationElse": "on",
+                "noNestedTernary": "on",
+                "noParameterAssign": "on",
+                "noParameterProperties": "on",
+                "noProcessEnv": "on",
+                "noRestrictedGlobals": "on",
+                "noRestrictedImports": {
+                    "level": "on",
+                    "options": {
+                        "paths": {}
+                    }
+                },
+                "noShoutyConstants": "off",
+                "noSubstr": "on",
+                "noUnusedTemplateLiteral": "on",
+                "noUselessElse": "on",
+                "noYodaExpression": "on",
+                "useAsConstAssertion": "on",
+                "useAtIndex": "on",
+                "useBlockStatements": "on",
+                "useCollapsedElseIf": "on",
+                "useCollapsedIf": "on",
+                "useConsistentArrayType": "on",
+                "useConsistentBuiltinInstantiation": "on",
+                "useConsistentMemberAccessibility": {
+                    "level": "on",
+                    "options": {
+                        "accessibility": "explicit"
+                    }
+                },
+                "useDefaultParameterLast": "on",
+                "useDefaultSwitchClause": "on",
+                "useEnumInitializers": "on",
+                "useExplicitLengthCheck": "on",
+                "useExponentiationOperator": "off",
+                "useFilenamingConvention": {
+                    "level": "on",
+                    "options": {
+                        "strictCase": false,
+                        "requireAscii": true,
+                        "filenameCases": [
+                            "export"
+                        ]
+                    }
+                },
+                "useForOf": "on",
+                "useNamingConvention": {
+                    "level": "error",
+                    "options": {
+                        "strictCase": false,
+                        "requireAscii": true,
+                        "conventions": [
+                            {
+                                "selector": {
+                                    "kind": "typeLike",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "PascalCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "enumMember",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "function",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "namespaceLike",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "PascalCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "importAlias",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "PascalCase",
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "exportAlias",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "PascalCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "const",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "CONSTANT_CASE",
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "let",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "var",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "using",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "functionParameter",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "catchParameter",
+                                    "scope": "any"
+                                },
+                                "match": "e(rr(or)?)?"
+                            },
+                            {
+                                "selector": {
+                                    "kind": "indexParameter",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase",
+                                    "snake_case"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "typeParameter",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "PascalCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "classProperty",
+                                    "scope": "any",
+                                    "modifiers": [
+                                        "readonly"
+                                    ]
+                                },
+                                "formats": [
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "classProperty",
+                                    "scope": "any",
+                                    "modifiers": [
+                                        "private"
+                                    ]
+                                },
+                                "match": "_[a-z][a-zA-Z0-9]*"
+                            },
+                            {
+                                "selector": {
+                                    "kind": "classProperty",
+                                    "scope": "any",
+                                    "modifiers": [
+                                        "protected"
+                                    ]
+                                },
+                                "match": "_*[a-z][a-zA-Z0-9]*"
+                            },
+                            {
+                                "selector": {
+                                    "kind": "classMember",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "objectLiteralMember",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase",
+                                    "snake_case"
+                                ]
+                            },
+                            {
+                                "selector": {
+                                    "kind": "typeMember",
+                                    "scope": "any"
+                                },
+                                "formats": [
+                                    "camelCase"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "useNodeAssertStrict": "on",
+                "useNumberNamespace": "on",
+                "useShorthandAssign": "on",
+                "useSingleVarDeclarator": "on",
+                "useThrowNewError": "on",
+                "useThrowOnlyError": "on",
+                "useTrimStartEnd": "on"
+            },
+            "suspicious": {
+                "noAlert": "on",
+                "noConsole": "off",
+                "noDuplicateTestHooks": "on",
+                "noEmptyBlockStatements": "on",
+                "noEvolvingTypes": "on",
+                "noExportsInTest": "on",
+                "noFocusedTests": "on",
+                "noMisplacedAssertion": "on",
+                "noSkippedTests": "on",
+                "noVar": "on",
+                "useAwait": "on",
+                "useErrorMessage": "on",
+                "useGuardForIn": "on",
+                "useNumberToFixedDigitsArgument": "on",
+                "useStrictMode": "on"
+            }
+        }
+    },
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": "off"
+            }
+        }
+    },
+    "overrides": [
+        {
+            "includes": [
+                "**/index.ts",
+                "**/type.ts"
+            ],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "useFilenamingConvention": "off"
+                    }
+                }
+            }
+        }
+    ],
+    "formatter": {
+        "enabled": true,
+        "bracketSpacing": true,
+        "expand": "auto",
+        "formatWithErrors": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineEnding": "lf",
+        "lineWidth": 110
+    },
+    "json": {
+        "formatter": {
+            "enabled": true,
+            "indentStyle": "space",
+            "bracketSpacing": true,
+            "indentWidth": 4,
+            "lineEnding": "lf",
+            "lineWidth": 110,
+            "expand": "auto"
+        }
+    }
+}
