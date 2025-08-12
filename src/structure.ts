@@ -24,7 +24,7 @@ interface ObjectStructure {
 
 interface ReferenceStructure {
     $kind: "REFERENCE";
-    $value: string;
+    $value: symbol;
 }
 
 export type { Primitive, Structure, PrimitiveStructure, ArrayStructure, ObjectStructure, ReferenceStructure };

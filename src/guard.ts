@@ -1,6 +1,3 @@
-import EventEmitter from "node:events";
-import process from "node:process";
-import { DatabaseSync } from "node:sqlite";
 import type {
     ArrayStructure,
     ObjectStructure,
@@ -11,62 +8,25 @@ import type {
 } from "./structure.js";
 
 class Guard {
-    private static readonly registerName = "register" as const;
-    private static readonly keyName = "key" as const;
-    private static readonly structName = "struct" as const;
-
-    private static _register = Guard.#initialize();
+    private static _register: Map<symbol, Structure> = new Map();
 
     private constructor() {}
 
-    static #initialize(): DatabaseSync {
-        const db = new DatabaseSync(":memory:");
-
-        db.exec(
-            `CREATE TABLE IF NOT EXISTS "${Guard.registerName}" ( "${Guard.keyName}" TEXT PRIMARY KEY, "${Guard.structName}" TEXT )`,
-        );
-
-        const SHUTDOWN_EMITTER: EventEmitter = new EventEmitter();
-        SHUTDOWN_EMITTER.once("shutdown", () => {
-            db.close();
-        });
-
-        process.on("SIGINT", () => SHUTDOWN_EMITTER.emit("shutdown"));
-        process.on("SIGTERM", () => SHUTDOWN_EMITTER.emit("shutdown"));
-
-        return db;
-    }
-
-    public static set(key: string, struct: Structure): string {
+    public static set(key: string, struct: Structure): symbol {
         if (!Guard.Validator.isStructure(struct)) {
             throw new Error("Invalid structure cannot be set");
         }
-        Guard._register
-            .prepare(
-                `INSERT OR REPLACE INTO "${Guard.registerName}" ( "${Guard.keyName}", "${Guard.structName}" ) VALUES ( ?, ? )`,
-            )
-            .run(key, JSON.stringify(struct));
-        return key;
+        const symbol = Symbol(key);
+        Guard._register.set(symbol, struct);
+        return symbol;
     }
 
-    public static get(key: string): Structure | null {
-        const row = Guard._register
-            .prepare(`SELECT "${Guard.structName}" FROM "${Guard.registerName}" WHERE "${Guard.keyName}" = ?`)
-            .get(key);
-
-        if (!row) {
-            return null;
-        }
-
-        const raw: string = row[Guard.structName] as string;
-        const struct: unknown = JSON.parse(raw);
-
-        return Guard.Validator.isStructure(struct) ? struct : null;
+    public static get(key: symbol): Structure | undefined {
+        return Guard._register.get(key);
     }
 
-    public static assert<T>(obj: unknown, struct: string | Structure): obj is T {
-        const structure =
-            typeof struct === "string" && struct.length > 0 ? Guard.get(struct) : (struct as Structure);
+    public static assert<T>(obj: unknown, struct: symbol | Structure): obj is T {
+        const structure = typeof struct === "symbol" ? Guard.get(struct) : struct;
 
         if (!structure) {
             throw new Error("Invalid structure or not found");
@@ -198,7 +158,7 @@ class Guard {
                 return false;
             }
 
-            if (!("$value" in struct && typeof struct.$value === "string" && struct.$value.length > 0)) {
+            if (!("$value" in struct && typeof struct.$value === "symbol")) {
                 return false;
             }
 
