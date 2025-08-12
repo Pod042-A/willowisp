@@ -269,6 +269,12 @@ class Guard {
                 return false;
             }
 
+            for (const [k, v] of Object.entries(struct.$value)) {
+                if (!(k in obj) && !v.$optional) {
+                    return false;
+                }
+            }
+
             for (const [k, v] of Object.entries(obj)) {
                 if (!(k in struct.$value) && !struct.$additional) {
                     return false;

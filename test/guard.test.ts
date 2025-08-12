@@ -1,6 +1,37 @@
 import { describe, it, expect } from "vitest";
 import { Guard, Structure } from "../src";
 
+type UserDetail = {
+    address: string;
+    job: string;
+    salary?: number;
+};
+const UserDetailStructure = {
+    $relation: "AND",
+    $types: [
+        {
+            $additional: true,
+            $kind: "OBJECT",
+            $value: {
+                address: {
+                    $relation: "AND",
+                    $types: [{ $kind: "PRIMITIVE", $value: "string" }],
+                },
+                job: {
+                    $relation: "AND",
+                    $types: [{ $kind: "PRIMITIVE", $value: "string" }],
+                },
+                salary: {
+                    $optional: true,
+                    $relation: "AND",
+                    $types: [{ $kind: "PRIMITIVE", $value: "number" }],
+                },
+            },
+        },
+    ],
+} satisfies Structure;
+const UserDetailStructureKey = Guard.set("UserDetail", UserDetailStructure);
+
 interface User {
     id: number;
     name: string;
@@ -11,6 +42,7 @@ interface User {
         status: number | string | boolean | null;
         tag: null;
     };
+    detail: UserDetail;
 }
 const UserStructure = {
     $relation: "AND",
@@ -67,6 +99,10 @@ const UserStructure = {
                         },
                     ],
                 },
+                detail: {
+                    $relation: "AND",
+                    $types: [{ $kind: "REFERENCE", $value: UserDetailStructureKey }],
+                },
             },
         },
     ],
@@ -90,7 +126,7 @@ describe("Guard", () => {
         expect(Guard.get(UserStructureKey)).toEqual(UserStructure);
     });
 
-    it("Correct structure initialed from Array structure & Reference structure", () => {
+    it("Correct structure initialed from Array structure", () => {
         expect(Guard.get(UsersStructureKey)).toEqual(UsersStructure);
     });
 
@@ -103,6 +139,68 @@ describe("Guard", () => {
                 active: true,
                 status: "1",
                 tag: null,
+            },
+            detail: {
+                address: "Detroit",
+                job: "Android",
+            },
+        };
+        const result = Guard.assert<User>(input, UserStructureKey);
+        console.log(result);
+        expect(result).toBe(true);
+    });
+
+    it("Incorrect object fail validation of Object structure with missing attribute without Optional value", () => {
+        const input: unknown = {
+            name: "Alice",
+            roles: ["user", "vip"],
+            profile: {
+                active: true,
+                status: "1",
+                tag: null,
+            },
+        };
+        const result = Guard.assert<User>(input, UserStructureKey);
+        console.log(result);
+        expect(result).toBe(false);
+    });
+
+    it("Incorrect object fail validation of Object structure with additional attribute without Additional value", () => {
+        const input: unknown = {
+            id: 1,
+            name: "Alice",
+            roles: ["user", "vip"],
+            profile: {
+                active: true,
+                status: "1",
+                tag: null,
+            },
+            detail: {
+                address: "Detroit",
+                job: "Android",
+            },
+            age: 10,
+        };
+        const result = Guard.assert<User>(input, UserStructureKey);
+        console.log(result);
+        expect(result).toBe(false);
+    });
+
+    it("Correct object pass validation of Object structure with additional attribute and Additional value", () => {
+        const input: unknown = {
+            id: 1,
+            name: "Alice",
+            roles: ["user", "vip"],
+            profile: {
+                active: true,
+                status: "1",
+                tag: null,
+            },
+            detail: {
+                address: "Detroit",
+                job: "Android",
+                salary: 0,
+                age: 10,
             },
         };
         expect(Guard.assert<User>(input, UserStructureKey)).toBe(true);
@@ -119,11 +217,16 @@ describe("Guard", () => {
                 status: "1",
                 tag: null,
             },
+            detail: {
+                address: "Detroit",
+                job: "Android",
+                salary: 0,
+            },
         };
         expect(Guard.assert<User>(input, UserStructure)).toBe(true);
     });
 
-    it("Correct object pass validation of Array structure and Reference structure", () => {
+    it("Correct object pass validation of Array structure", () => {
         const input: unknown[] = [
             {
                 id: 1,
@@ -135,6 +238,11 @@ describe("Guard", () => {
                     status: "1",
                     tag: null,
                 },
+                detail: {
+                    address: "Detroit",
+                    job: "Android",
+                    salary: 0,
+                },
             },
             {
                 id: 2,
@@ -144,6 +252,11 @@ describe("Guard", () => {
                     active: false,
                     status: 0,
                     tag: null,
+                },
+                detail: {
+                    address: "Detroit",
+                    job: "Android",
+                    salary: 0,
                 },
             },
         ];
