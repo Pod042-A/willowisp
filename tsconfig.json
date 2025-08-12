@@ -107,7 +107,7 @@
   "include": [
     "**/*.ts",
     "**/*.d.ts"
-  ],
+, "src/index.ts.temp"  ],
   "exclude": [
     "node_modules",
     "dist"

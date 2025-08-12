@@ -5,7 +5,7 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "compile": "npx tsc",
-    "test": "node ./dist/test/test.js"
+    "test": "vitest"
   },
   "author": "Pod042-A",
   "license": "Apache-2.0",
@@ -13,11 +13,13 @@
   "devDependencies": {
     "@biomejs/biome": "^2.1.2",
     "@types/node": "^24.2.1",
-    "biome": "^0.3.3",
-    "typescript": "^5.9.2"
+    "biome": "^0.2.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "files": [
     "dist",
+    "!dist/test/**",
     "README.md",
     "LICENSE"
   ],
