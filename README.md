@@ -32,12 +32,12 @@ const UserDetailStructure = {
     $types: [
         {
             $additional: true,
-            $kind: "OBJECT",
+            $kind: StructureType.Object,
             $value: {
                 salary: {
                     $optional: true,
                     $relation: "AND",
-                    $types: [{ $kind: "PRIMITIVE", $value: "number" }],
+                    $types: [{ $kind: StructureType.Primitive, $value: "number" }],
                 },
                 ...
             },
@@ -65,17 +65,17 @@ interface User {
     detail: UserDetail;
 }
 ```
-In the `UserStructure`, the `detail` field references the previously registered `UserDetailStructureKey` via `$kind: "REFERENCE"`:
+In the `UserStructure`, the `detail` field references the previously registered `UserDetailStructureKey` via `$kind: Structure.Reference`:
 ```ts
 const UserStructure = {
     $relation: "AND",
     $types: [
         {
-            $kind: "OBJECT",
+            $kind: Structure.Object,
             $value: {
                 detail: {
                     $relation: "AND",
-                    $types: [{ $kind: "REFERENCE", $value: UserDetailStructureKey }],
+                    $types: [{ $kind: Structure.Reference, $value: UserDetailStructureKey }],
                 },
                 ...
             },
