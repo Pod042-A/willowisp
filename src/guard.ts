@@ -1,14 +1,19 @@
-import type {
-    ArrayStructure,
-    ObjectStructure,
-    Primitive,
-    PrimitiveStructure,
-    ReferenceStructure,
-    Structure,
-} from "./structure.js";
+import {
+    StructureType,
+    type ArrayStructure,
+    type ExtendStructure,
+    type ObjectStructure,
+    type Primitive,
+    type PrimitiveStructure,
+    type ReferenceStructure,
+    type Structure,
+} from "./structure";
+
+type ExtendValidator = <T>(value: unknown) => value is T;
 
 class Guard {
     private static _register: Map<symbol, Structure> = new Map();
+    private static _validator: Map<symbol, ExtendValidator> = new Map();
 
     private constructor() {}
 
@@ -35,18 +40,14 @@ class Guard {
         return Guard.Validator.validate(obj, structure);
     }
 
-    private static Validator = class {
-        private constructor() {}
-
-        public static isObject(obj: unknown): obj is object {
+    protected static Validator = {
+        isObject(obj: unknown): obj is object {
             return obj !== null && typeof obj === "object";
-        }
-
-        public static isPrimitive(type: unknown): type is Primitive {
+        },
+        isPrimitive(type: unknown): type is Primitive {
             return type === "string" || type === "number" || type === "boolean" || type === "null";
-        }
-
-        public static isStructure(struct: unknown): struct is Structure {
+        },
+        isStructure(struct: unknown): struct is Structure {
             if (!Guard.Validator.isObject(struct)) {
                 return false;
             }
@@ -68,39 +69,32 @@ class Guard {
                     return false;
                 }
 
-                if (
-                    !(
-                        "$kind" in s &&
-                        (s.$kind === "PRIMITIVE" ||
-                            s.$kind === "ARRAY" ||
-                            s.$kind === "OBJECT" ||
-                            s.$kind === "REFERENCE")
-                    )
-                ) {
+                if (!("$kind" in s)) {
                     return false;
                 }
 
                 switch (s.$kind) {
-                    case "PRIMITIVE":
+                    case StructureType.Primitive:
                         return Guard.Validator.isPrimitiveStructure(s);
-                    case "ARRAY":
+                    case StructureType.Array:
                         return Guard.Validator.isArrayStructure(s);
-                    case "OBJECT":
+                    case StructureType.Object:
                         return Guard.Validator.isObjectStructure(s);
-                    case "REFERENCE":
+                    case StructureType.Reference:
                         return Guard.Validator.isReferenceStructure(s);
+                    case StructureType.Extend:
+                        return Guard.Validator.isExtendStructure(s);
                     default:
                         return false;
                 }
             });
-        }
-
-        public static isPrimitiveStructure(struct: unknown): struct is PrimitiveStructure {
+        },
+        isPrimitiveStructure(struct: unknown): struct is PrimitiveStructure {
             if (!Guard.Validator.isObject(struct)) {
                 return false;
             }
 
-            if (!("$kind" in struct && struct.$kind === "PRIMITIVE")) {
+            if (!("$kind" in struct && struct.$kind === StructureType.Primitive)) {
                 return false;
             }
 
@@ -109,14 +103,13 @@ class Guard {
             }
 
             return true;
-        }
-
-        public static isArrayStructure(struct: unknown): struct is ArrayStructure {
+        },
+        isArrayStructure(struct: unknown): struct is ArrayStructure {
             if (!Guard.Validator.isObject(struct)) {
                 return false;
             }
 
-            if (!("$kind" in struct && struct.$kind === "ARRAY")) {
+            if (!("$kind" in struct && struct.$kind === StructureType.Array)) {
                 return false;
             }
 
@@ -125,14 +118,13 @@ class Guard {
             }
 
             return true;
-        }
-
-        public static isObjectStructure(struct: unknown): struct is ObjectStructure {
+        },
+        isObjectStructure(struct: unknown): struct is ObjectStructure {
             if (!Guard.Validator.isObject(struct)) {
                 return false;
             }
 
-            if (!("$kind" in struct && struct.$kind === "OBJECT")) {
+            if (!("$kind" in struct && struct.$kind === StructureType.Object)) {
                 return false;
             }
 
@@ -147,14 +139,13 @@ class Guard {
             return Object.entries(struct.$value).every(
                 ([k, s]) => typeof k === "string" && Guard.Validator.isStructure(s),
             );
-        }
-
-        public static isReferenceStructure(struct: unknown): struct is ReferenceStructure {
+        },
+        isReferenceStructure(struct: unknown): struct is ReferenceStructure {
             if (!Guard.Validator.isObject(struct)) {
                 return false;
             }
 
-            if (!("$kind" in struct && struct.$kind === "REFERENCE")) {
+            if (!("$kind" in struct && struct.$kind === StructureType.Reference)) {
                 return false;
             }
 
@@ -162,10 +153,24 @@ class Guard {
                 return false;
             }
 
-            return Guard.get(struct.$value) !== null;
-        }
+            return Guard.get(struct.$value) !== undefined;
+        },
+        isExtendStructure(struct: unknown): struct is ExtendStructure {
+            if (!Guard.Validator.isObject(struct)) {
+                return false;
+            }
 
-        public static validate(obj: unknown, struct: Structure): boolean {
+            if (!("$kind" in struct && struct.$kind === StructureType.Extend)) {
+                return false;
+            }
+
+            if (!("$value" in struct && typeof struct.$value === "symbol")) {
+                return false;
+            }
+
+            return Guard.Extend.get(struct.$value) !== undefined;
+        },
+        validate(obj: unknown, struct: Structure): boolean {
             if (!Guard.Validator.isStructure(struct)) {
                 return false;
             }
@@ -174,17 +179,20 @@ class Guard {
                 let valid: boolean;
 
                 switch (type.$kind) {
-                    case "PRIMITIVE":
-                        valid = Guard.Validator.#validatePrimitive(obj, type);
+                    case StructureType.Primitive:
+                        valid = Guard.Validator.validatePrimitive(obj, type);
                         break;
-                    case "ARRAY":
-                        valid = Guard.Validator.#validateArray(obj, type);
+                    case StructureType.Array:
+                        valid = Guard.Validator.validateArray(obj, type);
                         break;
-                    case "OBJECT":
-                        valid = Guard.Validator.#validateObject(obj, type);
+                    case StructureType.Object:
+                        valid = Guard.Validator.validateObject(obj, type);
                         break;
-                    case "REFERENCE":
-                        valid = Guard.Validator.#validateReference(obj, type);
+                    case StructureType.Reference:
+                        valid = Guard.Validator.validateReference(obj, type);
+                        break;
+                    case StructureType.Extend:
+                        valid = Guard.Validator.validateExtend(obj, type);
                         break;
                     default:
                         valid = false;
@@ -199,9 +207,8 @@ class Guard {
             }
 
             return struct.$relation === "AND";
-        }
-
-        static #validatePrimitive(obj: unknown, struct: PrimitiveStructure): boolean {
+        },
+        validatePrimitive(obj: unknown, struct: PrimitiveStructure): boolean {
             switch (struct.$value) {
                 case "string":
                     return typeof obj === "string";
@@ -214,17 +221,15 @@ class Guard {
                 default:
                     return false;
             }
-        }
-
-        static #validateArray(obj: unknown, struct: ArrayStructure): boolean {
+        },
+        validateArray(obj: unknown, struct: ArrayStructure): boolean {
             if (!Array.isArray(obj)) {
                 return false;
             }
 
             return obj.every((el) => Guard.Validator.validate(el, struct.$value));
-        }
-
-        static #validateObject(obj: unknown, struct: ObjectStructure): boolean {
+        },
+        validateObject(obj: unknown, struct: ObjectStructure): boolean {
             if (!Guard.Validator.isObject(obj) || Array.isArray(obj)) {
                 return false;
             }
@@ -246,9 +251,8 @@ class Guard {
             }
 
             return true;
-        }
-
-        static #validateReference(obj: unknown, struct: ReferenceStructure): boolean {
+        },
+        validateReference(obj: unknown, struct: ReferenceStructure): boolean {
             const ref = Guard.get(struct.$value);
 
             if (!ref) {
@@ -256,7 +260,30 @@ class Guard {
             }
 
             return Guard.Validator.validate(obj, ref);
-        }
+        },
+        validateExtend(obj: unknown, struct: ExtendStructure): boolean {
+            const ext = Guard.Extend.get(struct.$value);
+
+            if (!ext) {
+                return false;
+            }
+
+            return ext(obj);
+        },
+    };
+
+    public static Extend = {
+        set(key: string, validator: ExtendValidator): symbol {
+            if (typeof validator !== "function") {
+                throw new Error("Invalid validator cannot be set");
+            }
+            const symbol = Symbol(key);
+            Guard._validator.set(symbol, validator);
+            return symbol;
+        },
+        get(key: symbol): ExtendValidator | undefined {
+            return Guard._validator.get(key);
+        },
     };
 }
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Guard, Structure } from "../src";
+import { Guard, Structure, StructureType } from "../src";
 
 type UserDetail = {
     address: string;
@@ -11,20 +11,20 @@ const UserDetailStructure = {
     $types: [
         {
             $additional: true,
-            $kind: "OBJECT",
+            $kind: StructureType.Object,
             $value: {
                 address: {
                     $relation: "AND",
-                    $types: [{ $kind: "PRIMITIVE", $value: "string" }],
+                    $types: [{ $kind: StructureType.Primitive, $value: "string" }],
                 },
                 job: {
                     $relation: "AND",
-                    $types: [{ $kind: "PRIMITIVE", $value: "string" }],
+                    $types: [{ $kind: StructureType.Primitive, $value: "string" }],
                 },
                 salary: {
                     $optional: true,
                     $relation: "AND",
-                    $types: [{ $kind: "PRIMITIVE", $value: "number" }],
+                    $types: [{ $kind: StructureType.Primitive, $value: "number" }],
                 },
             },
         },
@@ -48,27 +48,35 @@ const UserStructure = {
     $relation: "AND",
     $types: [
         {
-            $kind: "OBJECT",
+            $kind: StructureType.Object,
             $value: {
                 id: {
                     $relation: "AND",
-                    $types: [{ $kind: "PRIMITIVE", $value: "number" }],
+                    $types: [{ $kind: StructureType.Primitive, $value: "number" }],
                 },
                 name: {
                     $relation: "AND",
-                    $types: [{ $kind: "PRIMITIVE", $value: "string" }],
+                    $types: [{ $kind: StructureType.Primitive, $value: "string" }],
                 },
                 email: {
                     $optional: true,
                     $relation: "AND",
-                    $types: [{ $kind: "PRIMITIVE", $value: "string" }],
+                    $types: [{ $kind: StructureType.Primitive, $value: "string" }],
                 },
                 roles: {
                     $relation: "AND",
                     $types: [
                         {
-                            $kind: "ARRAY",
-                            $value: { $relation: "AND", $types: [{ $kind: "PRIMITIVE", $value: "string" }] },
+                            $kind: StructureType.Array,
+                            $value: {
+                                $relation: "AND",
+                                $types: [
+                                    {
+                                        $kind: StructureType.Primitive,
+                                        $value: "string",
+                                    },
+                                ],
+                            },
                         },
                     ],
                 },
@@ -76,24 +84,24 @@ const UserStructure = {
                     $relation: "AND",
                     $types: [
                         {
-                            $kind: "OBJECT",
+                            $kind: StructureType.Object,
                             $value: {
                                 active: {
                                     $relation: "AND",
-                                    $types: [{ $kind: "PRIMITIVE", $value: "boolean" }],
+                                    $types: [{ $kind: StructureType.Primitive, $value: "boolean" }],
                                 },
                                 status: {
                                     $relation: "OR",
                                     $types: [
-                                        { $kind: "PRIMITIVE", $value: "string" },
-                                        { $kind: "PRIMITIVE", $value: "number" },
-                                        { $kind: "PRIMITIVE", $value: "boolean" },
-                                        { $kind: "PRIMITIVE", $value: "null" },
+                                        { $kind: StructureType.Primitive, $value: "string" },
+                                        { $kind: StructureType.Primitive, $value: "number" },
+                                        { $kind: StructureType.Primitive, $value: "boolean" },
+                                        { $kind: StructureType.Primitive, $value: "null" },
                                     ],
                                 },
                                 tag: {
                                     $relation: "AND",
-                                    $types: [{ $kind: "PRIMITIVE", $value: "null" }],
+                                    $types: [{ $kind: StructureType.Primitive, $value: "null" }],
                                 },
                             },
                         },
@@ -101,7 +109,7 @@ const UserStructure = {
                 },
                 detail: {
                     $relation: "AND",
-                    $types: [{ $kind: "REFERENCE", $value: UserDetailStructureKey }],
+                    $types: [{ $kind: StructureType.Reference, $value: UserDetailStructureKey }],
                 },
             },
         },
@@ -114,12 +122,75 @@ const UsersStructure = {
     $relation: "AND",
     $types: [
         {
-            $kind: "ARRAY",
-            $value: { $relation: "AND", $types: [{ $kind: "REFERENCE", $value: UserStructureKey }] },
+            $kind: StructureType.Array,
+            $value: {
+                $relation: "AND",
+                $types: [{ $kind: StructureType.Reference, $value: UserStructureKey }],
+            },
         },
     ],
 } satisfies Structure;
 const UsersStructureKey = Guard.set("Users", UsersStructure);
+
+const dateValidator = <Date>(value: unknown): value is Date => {
+    return value instanceof Date;
+};
+const DateValidatorKey = Guard.Extend.set("Date", dateValidator);
+type Information = {
+    createAt: Date;
+    updatedAt: Date;
+    expiredAt?: Date;
+    message: string;
+};
+const InformationStructure = {
+    $relation: "AND",
+    $types: [
+        {
+            $additional: true,
+            $kind: StructureType.Object,
+            $value: {
+                createdAt: {
+                    $relation: "AND",
+                    $types: [
+                        {
+                            $kind: StructureType.Extend,
+                            $value: DateValidatorKey,
+                        },
+                    ],
+                },
+                updatedAt: {
+                    $relation: "AND",
+                    $types: [
+                        {
+                            $kind: StructureType.Extend,
+                            $value: DateValidatorKey,
+                        },
+                    ],
+                },
+                expiredAt: {
+                    $optional: true,
+                    $relation: "AND",
+                    $types: [
+                        {
+                            $kind: StructureType.Extend,
+                            $value: DateValidatorKey,
+                        },
+                    ],
+                },
+                message: {
+                    $relation: "AND",
+                    $types: [
+                        {
+                            $kind: StructureType.Primitive,
+                            $value: "string",
+                        },
+                    ],
+                },
+            },
+        },
+    ],
+} satisfies Structure;
+const InformationStructureKey = Guard.set("Information", InformationStructure);
 
 describe("Guard", () => {
     it("Correct structure initialed from Object structure", () => {
@@ -261,5 +332,22 @@ describe("Guard", () => {
             },
         ];
         expect(Guard.assert<Users>(input, UsersStructureKey)).toBe(true);
+    });
+});
+
+describe("Extend", () => {
+    it("Correct validator", () => {
+        expect(Guard.Extend.get(DateValidatorKey)).toEqual(dateValidator);
+    });
+
+    it("Correct object pass validation of Extend structure", () => {
+        const input: unknown = {
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            message: "message",
+        };
+        const result = Guard.assert<Information>(input, InformationStructureKey);
+        console.log(result);
+        expect(result).toBe(true);
     });
 });

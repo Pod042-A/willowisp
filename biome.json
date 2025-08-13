@@ -27,7 +27,7 @@
                 "noPrivateImports": "on",
                 "noUndeclaredDependencies": "off",
                 "noUndeclaredVariables": "on",
-                "useImportExtensions": "on"
+                "useImportExtensions": "off"
             },
             "nursery": {
                 "noAwaitInLoop": "on",
@@ -72,10 +72,10 @@
                 "useUnifiedTypeSignature": "on"
             },
             "performance": {
-                "noBarrelFile": "on",
+                "noBarrelFile": "off",
                 "noDelete": "on",
                 "noNamespaceImport": "on",
-                "noReExportAll": "on",
+                "noReExportAll": "off",
                 "useTopLevelRegex": "on"
             },
             "style": {
@@ -295,7 +295,7 @@
                                         "protected"
                                     ]
                                 },
-                                "match": "_*[a-z][a-zA-Z0-9]*"
+                                "match": "_*[a-z][a-zA-Z0-9]*|([A-Z][a-z]+)+"
                             },
                             {
                                 "selector": {
@@ -303,7 +303,8 @@
                                     "scope": "any"
                                 },
                                 "formats": [
-                                    "camelCase"
+                                    "camelCase",
+                                    "PascalCase"
                                 ]
                             },
                             {
@@ -321,6 +322,7 @@
                                     "kind": "typeMember",
                                     "scope": "any"
                                 },
+                                "match": "\\$[a-zA-Z0-9]+",
                                 "formats": [
                                     "camelCase"
                                 ]
