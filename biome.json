@@ -82,7 +82,7 @@
                 "noCommonJs": "on",
                 "noDefaultExport": "on",
                 "noDoneCallback": "on",
-                "noEnum": "on",
+                "noEnum": "off",
                 "noExportedImports": "on",
                 "noInferrableTypes": "on",
                 "noNamespace": "on",

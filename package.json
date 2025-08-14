@@ -1,8 +1,8 @@
 {
   "name": "willowisp",
-  "version": "0.2.1",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "version": "0.2.2",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "compile": "npx tsc",
     "test": "vitest"
@@ -11,9 +11,8 @@
   "license": "Apache-2.0",
   "description": "Runtime type validation and structure guard for JSON-compatible objects in TypeScript.",
   "devDependencies": {
-    "@biomejs/biome": "^2.1.2",
+    "@biomejs/biome": "2.1.2",
     "@types/node": "^24.2.1",
-    "biome": "^0.2.2",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },

@@ -17,28 +17,28 @@ interface Structure {
 }
 
 interface PrimitiveStructure {
-    $kind: StructureType.Primitive;
+    $kind: "PRIMITIVE";
     $value: Primitive;
 }
 
 interface ArrayStructure {
-    $kind: StructureType.Array;
+    $kind: "ARRAY";
     $value: Structure;
 }
 
 interface ObjectStructure {
-    $kind: StructureType.Object;
+    $kind: "OBJECT";
     $value: Record<string, Structure>;
     $additional?: boolean;
 }
 
 interface ReferenceStructure {
-    $kind: StructureType.Reference;
+    $kind: "REFERENCE";
     $value: symbol;
 }
 
 interface ExtendStructure {
-    $kind: StructureType.Extend;
+    $kind: "EXTEND";
     $value: symbol;
 }
 
